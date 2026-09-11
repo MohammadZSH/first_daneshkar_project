@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-m)m0^)weqe2v@17pfr-f@76s06#!=ngl^%nkz%@xy(47_)1*&v
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 
 # Application definition
@@ -57,7 +57,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,16 +75,40 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
+
+AUTH_USER_MODEL = 'accounts.User'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'first_daneshkar_project',
+        'USER': 'postgres',
+        'PASSWORD':'1',
+        'HOST':'localhost',
+        'PORT':'5432',
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'first_daneshkar_project',
+#         'USER': 'postgres',
+#         'PASSWORD':'1',
+#         'HOST':'localhost',
+#         'PORT':'5432',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
+# آدرس صفحه لاگین (برای زمانی که کاربر لاگین نکرده)
+LOGIN_URL = 'login'
+
+# آدرس صفحه‌ای که کاربر بعد از لاگین به آن هدایت می‌شود
+LOGIN_REDIRECT_URL = 'home'
+
+# آدرس صفحه‌ای که کاربر بعد از خروج به آن هدایت می‌شود
+LOGOUT_REDIRECT_URL = 'login'
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -117,13 +141,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
-STATIC_URL = 'static/'
-AUTH_USER_MODEL = 'accounts.User'
 
-# Media files (for product images)
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_ROOT = BASE_DIR / "media"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration

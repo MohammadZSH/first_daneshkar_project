@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order History | DijiKala{% endblock %}
+
+{% block content %}
+<div class="order-history-container">
+    <h2>📦 My Order History</h2>
+
+    {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+                <div class="card order-card" style="margin-bottom: 24px; text-align: left; padding: 20px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; padding-bottom: 12px; margin-bottom: 15px;">
+                        <div>
+                            <h3 style="margin: 0 0 5px 0;">Order #{{ order.id }}</h3>
+                            <small style="color: #666;">Placed on: {{ order.created_at|date:"Y-m-d H:i" }}</small>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="status-badge status-{{ order.status|lower }}" style="padding: 5px 12px; border-radius: 15px; font-weight: bold; font-size: 0.9em; background-color: #e3f2fd; color: #1565c0;">
+                                {{ order.get_status_display|default:order.status|title }}
+                            </span>
+                            <p style="margin: 8px 0 0 0; font-size: 1.1em; font-weight: bold;">
+                                Total: ${{ order.total_price }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="order-items-table" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid #eee; text-align: left;">
+                                    <th style="padding: 8px;">Product</th>
+                                    <th style="padding: 8px; text-align: center;">Qty</th>
+                                    <th style="padding: 8px; text-align: right;">Price Each</th>
+                                    <th style="padding: 8px; text-align: right;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order.items.all %}
+                                    <tr style="border-bottom: 1px solid #f7f7f7;">
+                                        <td style="padding: 10px 8px;">
+                                            <strong>{{ item.product.name|default:item.product_name }}</strong>
+                                        </td>
+                                        <td style="padding: 10px 8px; text-align: center;">
+                                            {{ item.quantity }}
+                                        </td>
+                                        <td style="padding: 10px 8px; text-align: right;">
+                                            ${{ item.price }}
+                                        </td>
+                                        <td style="padding: 10px 8px; text-align: right;">
+                                            ${{ item.get_cost|default:item.price }}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card" style="text-align: center; padding: 40px 20px;">
+            <p style="font-size: 1.2em; color: #666;">You haven't placed any orders yet.</p>
+            <a href="{% url 'home' %}" class="btn" style="display: inline-block; margin-top: 10px;">Start Shopping</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
