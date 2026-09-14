@@ -5,8 +5,13 @@ from django.contrib import messages
 from django.db import transaction
 from .models import CartItem, Order, OrderItem
 from products.models import Product
-from accounts.models import CustomerProfile
+from accounts.models import CustomerProfile, SellerProfile
 
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(customer__user=request.user).order_by('-date').prefetch_related('items__product')
+    return render(request, 'order_history.html', {'orders': orders})
 
 # 6. Cart Page
 @login_required
@@ -58,7 +63,6 @@ def checkout_view(request):
 
     total_amount = sum(item.total_price for item in cart_items)
 
-    # Check sufficient balance
     if customer.balance < total_amount:
         messages.error(request, f"موجودی شما کافی نیست! موجودی: {customer.balance} | مبلغ کل: {total_amount}")
         return redirect('payment')
@@ -75,7 +79,7 @@ def checkout_view(request):
             status=Order.STATUS_PAID
         )
 
-        # 3. Create OrderItems & Transfer demo balance to sellers
+        # 3. Create OrderItems
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -83,14 +87,9 @@ def checkout_view(request):
                 quantity=item.quantity,
                 price=item.product.price
             )
-            # Demo logic: If seller has a customer profile/balance, transfer the amount
-            seller_user = item.product.store.owner.user
-            if hasattr(seller_user, 'customer_profile'):
-                seller_user.customer_profile.balance += item.total_price
-                seller_user.customer_profile.save()
 
         # 4. Clear cart
         cart_items.delete()
 
-    messages.success(request, f"سفارش شماره #{order.id} با موفقیت ثبت و پرداخت شد.")
+    messages.success(request, f"Сفارش شماره #{order.id} با موفقیت ثبت و پرداخت شد.")
     return redirect('customer_panel')

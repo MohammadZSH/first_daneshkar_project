@@ -48,7 +48,7 @@ def create_store_view(request):
             return redirect('store_detail', store_id=store.id)
     else:
         form = StoreForm()
-    return render(request, 'store_detail.html', {'form': form, 'is_create': True})
+    return render(request, 'store_form.html', {'form': form})
 
 
 # Add Product to a Store (Seller only)
@@ -69,4 +69,4 @@ def add_product_view(request, store_id):
             return redirect('store_detail', store_id=store.id)
     else:
         form = ProductForm()
-    return render(request, 'store_detail.html', {'form': form, 'store': store, 'is_add_product': True})
+    return render(request, 'product_form.html', {'form': form, 'store': store})

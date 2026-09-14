@@ -64,6 +64,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.csrf',
             ],
         },
     },
@@ -76,17 +77,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
 
 
-AUTH_USER_MODEL = 'accounts.User'
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'first_daneshkar_project',
-        'USER': 'postgres',
-        'PASSWORD':'1',
-        'HOST':'localhost',
-        'PORT':'5432',
-    }
-}
+# AUTH_USER_MODEL = 'accounts.User'
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
@@ -97,6 +88,16 @@ DATABASES = {
 #         'PORT':'5432',
 #     }
 # }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'first_daneshkar_project',
+        'USER': 'postgres',
+        'PASSWORD':'Jafar353',
+        'HOST':'localhost',
+        'PORT':'5432',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
@@ -157,3 +158,5 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+AUTH_USER_MODEL = 'accounts.User'
