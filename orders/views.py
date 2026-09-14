@@ -40,7 +40,7 @@ def add_to_cart_view(request, product_id):
         cart_item.quantity += 1
         cart_item.save()
     
-    messages.success(request, f"«{product.name}» به سبد خرید اضافه شد.")
+    messages.success(request, f"«{product.name}» has been added to your cart.")
     return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 
@@ -50,7 +50,7 @@ def remove_from_cart_view(request, item_id):
     customer, _ = CustomerProfile.objects.get_or_create(user=request.user)
     cart_item = get_object_or_404(CartItem, id=item_id, customer=customer)
     cart_item.delete()
-    messages.info(request, "محصول از سبد خرید حذف شد.")
+    messages.info(request, "Product has been removed from your cart.")
     return redirect('cart')
 
 

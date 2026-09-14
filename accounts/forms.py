@@ -5,11 +5,11 @@ from .models import User
 
 class SignUpForm(UserCreationForm):
     ROLE_CHOICES = (
-        ('customer', 'مشتری (Customer)'),
-        ('seller', 'فروشنده (Seller)'),
+        ('customer', 'Customer'),
+        ('seller', 'Seller'),
     )
-    role = forms.ChoiceField(choices=ROLE_CHOICES, initial='customer', label="نقش کاربری")
-    phone = forms.CharField(max_length=20, required=False, label="شماره تماس")
+    role = forms.ChoiceField(choices=ROLE_CHOICES, initial='customer', label="User role")
+    phone = forms.CharField(max_length=20, required=False, label="Phone number")
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -39,5 +39,5 @@ class AddBalanceForm(forms.Form):
         max_digits=12,
         decimal_places=2,
         min_value=1.00,
-        label="مبلغ افزایش موجودی"
+        label="Balance top-up amount"
     )

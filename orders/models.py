@@ -108,7 +108,6 @@ class OrderItem(models.Model):
         return self.price * self.quantity
 
     def save(self, *args, **kwargs):
-        # Automatically snapshot product price if not provided
         if not self.price and self.product:
             self.price = self.product.price
         super().save(*args, **kwargs)
