@@ -38,6 +38,12 @@ class SellerProfile(models.Model):
         on_delete=models.CASCADE,
         related_name='seller_profile'
     )
+    balance = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        default=Decimal('0.00')
+    )
 
     def __str__(self):
         return f"Seller Profile: {self.user.username}"
+        

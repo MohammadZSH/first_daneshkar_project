@@ -15,11 +15,22 @@
             <div class="nav-left">
                 <a href="/" class="logo">🛍️ DijiKala</a>
             </div>
+
+            <form method="get" action="{% url 'home' %}" class="search-form">
+                <input type="text" name="q" placeholder="Search products..." value="{{ query|default:'' }}">
+                <button type="submit">🔍</button>
+            </form>
+            
             <div class="nav-right">
                 {% if user.is_authenticated %}
                     <a href="{% url 'customer_panel' %}">👤 {{ user.username }}</a>
                     <a href="{% url 'cart' %}">🛒 Cart</a>
                     <a href="{% url 'stores' %}">🏪 All Stores</a>
+
+                    {% if user.is_seller %}
+                        <a href="{% url 'seller_panel' %}">👨‍💼 Seller Panel</a>
+                    {% endif %}
+
                     <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
                     <a href="{% url 'login' %}">Login</a>

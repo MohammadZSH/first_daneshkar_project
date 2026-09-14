@@ -4,9 +4,42 @@
 {% block content %}
 <h2>👨‍💼 Seller Panel</h2>
 
-<a href="{% url 'create_store' %}" class="btn">+ Create New Store</a>
+<!-- ====== EARNINGS SUMMARY ====== -->
+<div class="seller-stats">
+    <div class="seller-stat-card">
+        <div class="seller-stat-icon">💰</div>
+        <div class="seller-stat-info">
+            <span class="seller-stat-label">My Balance</span>
+            <span class="seller-stat-value">${{ seller_balance }}</span>
+        </div>
+    </div>
 
-<div class="card-grid" style="margin-top: 20px;">
+    <div class="seller-stat-card">
+        <div class="seller-stat-icon">📈</div>
+        <div class="seller-stat-info">
+            <span class="seller-stat-label">Total Sales</span>
+            <span class="seller-stat-value">${{ total_sales }}</span>
+        </div>
+    </div>
+
+    <div class="seller-stat-card">
+        <div class="seller-stat-icon">🏪</div>
+        <div class="seller-stat-info">
+            <span class="seller-stat-label">My Stores</span>
+            <span class="seller-stat-value">{{ stores.count }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- ====== CREATE STORE BUTTON ====== -->
+<div style="margin: 24px 0;">
+    <a href="{% url 'create_store' %}" class="btn">+ Create New Store</a>
+</div>
+
+<!-- ====== MY STORES ====== -->
+<h3 style="margin-top: 24px;">🏬 My Stores</h3>
+
+<div class="card-grid" style="margin-top: 16px;">
     {% for store in stores %}
         <div class="card">
             <h3>{{ store.name }}</h3>
@@ -14,7 +47,9 @@
             <a href="{% url 'store_detail' store.id %}" class="btn">Manage Store</a>
         </div>
     {% empty %}
-        <p>You have no stores yet.</p>
+        <div class="card" style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+            <p>You have no stores yet. Create your first store! 🏪</p>
+        </div>
     {% endfor %}
 </div>
 {% endblock %}

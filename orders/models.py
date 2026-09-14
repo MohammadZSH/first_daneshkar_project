@@ -21,7 +21,6 @@ class CartItem(models.Model):
     class Meta:
         verbose_name = 'Cart Item'
         verbose_name_plural = 'Cart Items'
-        # Prevent duplicate rows for the same product in a single customer's cart
         unique_together = ('customer', 'product')
 
     @property

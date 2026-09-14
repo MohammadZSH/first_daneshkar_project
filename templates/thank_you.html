@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Thank You | DijiKala{% endblock %}
+
+{% block content %}
+<!-- ===== THANK YOU PAGE ===== -->
+<!-- Displayed after successful checkout -->
+<div class="thank-you-container">
+    <div class="thank-you-icon">✅</div>
+    <h1>Thank You for Your Order!</h1>
+    <p>Your order <strong>#{{ order.id }}</strong> has been placed successfully.</p>
+    <p class="thank-you-total">Total: <strong>${{ order.total_amount }}</strong></p>
+
+    <div class="thank-you-actions">
+        <a href="{% url 'home' %}" class="btn">Continue Shopping</a>
+        <a href="{% url 'order_history' %}" class="btn btn-secondary">View Order History</a>
+    </div>
+</div>
+{% endblock %}

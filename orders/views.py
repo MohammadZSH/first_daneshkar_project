@@ -8,12 +8,14 @@ from products.models import Product
 from accounts.models import CustomerProfile, SellerProfile
 
 
+
 @login_required
 def order_history(request):
     orders = Order.objects.filter(customer__user=request.user).order_by('-date').prefetch_related('items__product')
     return render(request, 'order_history.html', {'orders': orders})
 
-# 6. Cart Page
+
+
 @login_required
 def cart_view(request):
     customer, _ = CustomerProfile.objects.get_or_create(user=request.user)
@@ -27,6 +29,7 @@ def cart_view(request):
     })
 
 
+
 @login_required
 def add_to_cart_view(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -38,8 +41,8 @@ def add_to_cart_view(request, product_id):
         cart_item.save()
     
     messages.success(request, f"«{product.name}» به سبد خرید اضافه شد.")
-    # Redirect back to where the request came from or home
     return redirect(request.META.get('HTTP_REFERER', 'home'))
+
 
 
 @login_required
@@ -51,35 +54,37 @@ def remove_from_cart_view(request, item_id):
     return redirect('cart')
 
 
-# Checkout transaction: Deducts from Customer balance and completes order
+
 @login_required
 def checkout_view(request):
     customer, _ = CustomerProfile.objects.get_or_create(user=request.user)
     cart_items = CartItem.objects.filter(customer=customer).select_related('product', 'product__store__owner')
 
     if not cart_items.exists():
-        messages.error(request, "سبد خرید شما خالی است.")
+        messages.error(request, "Your cart is empty.")
         return redirect('cart')
+
+    for item in cart_items:
+        if item.quantity > item.product.stock:
+            messages.error(request, f"Not enough stock for {item.product.name}. Available: {item.product.stock}")
+            return redirect('cart')
 
     total_amount = sum(item.total_price for item in cart_items)
 
     if customer.balance < total_amount:
-        messages.error(request, f"موجودی شما کافی نیست! موجودی: {customer.balance} | مبلغ کل: {total_amount}")
+        messages.error(request, f"Insufficient balance! Balance: {customer.balance} | Total: {total_amount}")
         return redirect('payment')
 
     with transaction.atomic():
-        # 1. Deduct customer balance
         customer.balance -= total_amount
         customer.save()
 
-        # 2. Create Order
         order = Order.objects.create(
             customer=customer,
             total_amount=total_amount,
             status=Order.STATUS_PAID
         )
 
-        # 3. Create OrderItems
         for item in cart_items:
             OrderItem.objects.create(
                 order=order,
@@ -87,9 +92,22 @@ def checkout_view(request):
                 quantity=item.quantity,
                 price=item.product.price
             )
+            
+            item.product.stock -= item.quantity
+            item.product.save()
 
-        # 4. Clear cart
+            seller_profile = item.product.store.owner
+            seller_profile.balance += item.total_price
+            seller_profile.save()
+
         cart_items.delete()
 
-    messages.success(request, f"Сفارش شماره #{order.id} با موفقیت ثبت و پرداخت شد.")
-    return redirect('customer_panel')
+    messages.success(request, f"Order #{order.id} placed and paid successfully.")
+    return redirect('thank_you', order_id=order.id)
+
+
+
+@login_required
+def thank_you_view(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer__user=request.user)
+    return render(request, 'thank_you.html', {'order': order})
